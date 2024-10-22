@@ -8,4 +8,6 @@ class Variables:
     hallListJson = str
     availableSlotJson = str
 
+    x = 1100
+    y = 700
 

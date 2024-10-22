@@ -1,4 +1,3 @@
-# from resources.Variables import Variables as v
 from tools.ClearContent import clear_content
 from tools.Configure import *
 from tkinter import ttk, filedialog
@@ -31,6 +30,8 @@ def button_click(courseFilePath: str, hallFilePath: str, availableSlotFilePath: 
     print(v.hallListJson)
     print(v.availableSlotJson)
 
+
+# TODO confirm that all entries are not null or empty
 
 
 # This page display the first interface
