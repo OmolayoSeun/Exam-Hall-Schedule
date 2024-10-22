@@ -31,7 +31,7 @@ def button_click(courseFilePath: str, hallFilePath: str, availableSlotFilePath: 
     print(v.availableSlotJson)
 
 
-# TODO confirm that all entries are not null or empty
+
 
 
 # This page display the first interface
