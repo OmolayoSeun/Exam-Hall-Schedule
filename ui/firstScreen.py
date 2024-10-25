@@ -1,7 +1,9 @@
-from tools.ClearContent import clear_content
-from tools.Configure import *
 from tkinter import ttk, filedialog
-from resources.Variables import Variables as v
+from tools.ClearContent import *
+import resources.Variables
+from resources.Variables import *
+from tools.Configure import *
+from ui.secondScreen import secondScreen
 
 
 def open_file(textView: Entry):
@@ -15,35 +17,33 @@ def open_file(textView: Entry):
         textView.configure(foreground="black")
 
 
-def button_click(courseFilePath: str, hallFilePath: str, availableSlotFilePath: str):
-    if courseFilePath:
-        with open(courseFilePath, "r") as file:
-            v.courseListJson = file.read()
-    if hallFilePath:
-        with open(hallFilePath, 'r') as file:
-            v.hallListJson = file.read()
-    if availableSlotFilePath:
-        with open(availableSlotFilePath, 'r') as file:
-            v.availableSlotJson = file.read()
+def button_click(courseFilePath: str, hallFilePath: str, availableSlotFilePath: str, frame):
+    # First check if all entries are proper
+    frame.destroy()
 
-    print(v.courseListJson)
-    print(v.hallListJson)
-    print(v.availableSlotJson)
+    secondScreen.display(app)
+    # if courseFilePath:
+    #     with open(courseFilePath, "r") as file:
+    #         v.courseListJson = json.load(file)
+    # if hallFilePath:
+    #     with open(hallFilePath, 'r') as file:
+    #         v.hallListJson = json.load(file)
+    # if availableSlotFilePath:
+    #     with open(availableSlotFilePath, 'r') as file:
+    #         v.availableSlotJson = json.load(file)
 
-
-
+    print(courseListJson)
+    print(hallListJson)
+    print(availableSlotJson)
 
 
 # This page display the first interface
 class firstScreen:
 
-    def display(self, x, y):
-        clear_content()
-        frame = Frame(self)
-        configFrame(frame)
 
-        # v.holdFrameReference = frame
-        # v.app.update_idletasks()
+    def display(self):
+        frame = Frame(app)
+        configFrame(frame)
 
         configLabel(Label(frame, text="Course Data: ", anchor='w')).grid(row=0, column=0, sticky="w")
         configLabel(Label(frame, text="Hall Data: ")).grid(row=2, column=0, sticky="w")
@@ -63,7 +63,7 @@ class firstScreen:
         btn3 = Button(frame, text="+", padx=10, command=lambda: open_file(availableSlotsEntry))
 
         btn4 = Button(frame, text=">> Proceed >>", padx=10, command=lambda:
-        button_click(courseEntry.get(), hallEntry.get(), availableSlotsEntry.get()))
+        button_click(courseEntry.get(), hallEntry.get(), availableSlotsEntry.get(), frame))
 
         configButton(btn1)
         configButton(btn2)
@@ -82,7 +82,7 @@ class firstScreen:
         btn3.grid(row=4, column=5, columnspan=1, sticky='nswe')
         btn4.grid(row=5, column=0, columnspan=6, pady=10, sticky='nswe')
 
-        self.update_idletasks()
+        frame.update_idletasks()
         cenX = (x - frame.winfo_reqwidth()) // 2
         cenY = ((y - frame.winfo_reqheight()) // 2)
 
