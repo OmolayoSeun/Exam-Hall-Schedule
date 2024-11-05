@@ -284,5 +284,4 @@ def solveCSPProblem():
 
 
 
-
 refineData()
