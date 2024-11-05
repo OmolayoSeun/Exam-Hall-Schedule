@@ -1,9 +1,8 @@
-from resources.Variables import Variables as v
-
 # Clear the widgets of the frame content
-def clear_content():
+
+def clear_content(current_frame):
     try:
-        v.holdFrameReference.destroy()
+        current_frame.destroy()
     except Exception as e:
         print("Null View error\n", e)
     pass

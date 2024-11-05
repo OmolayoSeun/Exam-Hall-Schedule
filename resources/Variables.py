@@ -1,13 +1,19 @@
 # This class contains variables that will be used across various modules of the software
-class Variables:
-    app = None
-    holdFrameReference = None
-    currentView = None
+from enum import Enum
 
-    courseListJson = str
-    hallListJson = str
-    availableSlotJson = str
+current_frame = None
 
-    x = 1100
-    y = 700
+app = None
 
+courseListJson = dict
+hallListJson = dict
+availableSlotJson = dict
+
+x = 1100
+y = 700
+
+frames = {}
+
+class SCREEN(Enum):
+    FIRST_SCREEN = 1
+    SECOND_SCREEN = 2
