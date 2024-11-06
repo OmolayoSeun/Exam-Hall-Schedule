@@ -1,5 +1,6 @@
 from resources import Variables as v
 from constraint import *
+import copy
 
 # def open_file():
 #     with open("", "r") as file:
@@ -21,13 +22,13 @@ v.courseListJson = {
         "200 level": {
             "CHM211": [80, 3, "None"],
             "CHM212": [80, 3, "None"],
-            "CHM213": [80, 3, "None"],
+            "CHM213": [80, 3, "General"],
             "CHM214": [80, 3, "None"],
             "CHM219": [80, 3, "None"],
             "PHY211": [80, 3, "None"],
             "MTH211": [80, 3, "None"],
             "MTH213": [80, 3, "None"],
-            "GSE211": [80, 3, "None"],
+            "GSE211": [80, 3, "General"],
             "CSC211": [80, 3, "None"],
             "EVS212": [80, 3, "None"]
         },
@@ -41,7 +42,7 @@ v.courseListJson = {
             "CHM319": [80, 3, "None"],
             "CHM330": [80, 3, "None"],
             "CHM334": [80, 3, "None"],
-            "GSE311": [80, 3, "None"]
+            "GSE311": [80, 3, "General"]
         }
     },
     "Geology": {
@@ -63,10 +64,10 @@ v.courseListJson = {
             "GLY214": [80, 3, "None"],
             "GLY215": [80, 3, "None"],
             "GLY216": [80, 3, "None"],
-            "CHM213": [80, 3, "None"],
-            "GSE211": [80, 3, "None"],
-            "GSE111": [80, 3, "None"],
-            "GSE112": [80, 3, "None"]
+            "CHM213": [80, 3, "General"],
+            "GSE211": [80, 3, "General"],
+            "GSE111": [80, 3, "General"],
+            "GSE112": [80, 3, "General"]
         },
         "300 level": {
             "GLY331": [80, 3, "None"],
@@ -76,7 +77,7 @@ v.courseListJson = {
             "GLY315": [80, 3, "None"],
             "GLY316": [80, 3, "None"],
             "GPH314": [80, 3, "EVS212"],
-            "GSE311": [80, 3, "None"]
+            "GSE311": [80, 3, "General"]
         }
     }
 }
@@ -206,6 +207,7 @@ aliasExams = []
 
 examDomain = []
 
+
 def checkForAlias(a, b):
     if a is None:
         return [False, 0]
@@ -227,7 +229,9 @@ def refineData():
                 if courseInfo[2] == "General":
                     result = checkForAlias(aliasExams, courseCode)
                     if result[0]:
-                        aliasExams[result[1]].append(aliasExams[result[1]][-1] + 'x')
+                        courseCode = copy.deepcopy(aliasExams[result[1]][-1] + 'x')
+                        aliasExams[result[1]].append(courseCode)
+
                     else:
                         aliasExams.append([courseCode])
                 elif courseInfo[2] != "None":
@@ -246,42 +250,69 @@ def refineData():
             levelExamCourseUnit.append(lvlListUnit)
         deptExams.append(deptList)
 
-    # print(exams, "\n\n")
-    # print(examsStudentSize, "\n\n")
+    #print(exams, "\n\n")
+    #print(examsStudentSize, "\n\n")
     # print(deptExams, "\n\n")
     # print(levelExams, "\n\n")
     # print(levelExamCourseUnit, "\n\n")
     # print(aliasExams, "\n\n")
 
-    hallName = []
-    hallCap = []
+    halls = []
     days = []
     time = []
+    timeSlot = []
+    examList = []
     for name, capacity in v.hallListJson.items():
-        hallName.append(name)
-        hallCap.append(capacity)
+        halls.append([name, capacity])
 
     for day, slot in v.availableSlotJson.items():
         days.append(day)
         time.append(slot)
-    for n in range(len(hallName)):
-        timeSlot = [(i, j) for i in hallName for j in time[n]]
-    examDomain = [(d, ts) for d in days for ts in timeSlot]
-    print(examDomain)
+    for n in range(len(days)):
+        temp = []
+        for t in time[n]:
+            temp.append([days[n], t])
+        timeSlot.append(temp)
+    global examDomain
+    for days in timeSlot:
+        for slot in days:
+            for hall in halls:
+                #print("hall: ", hall)
+                temp = copy.deepcopy(slot)
+                temp.append(hall[0])
+                temp.append(hall[1])
+                # print("days: ", days)
+                # print("slot: ", slot)
+                # print(temp)
+                examList.append(temp)
+                del temp
+        pass
+    for exam in examList:
+        string = ''
+        for i in range(4):
+            string = string + copy.deepcopy(str(exam[i])) + ' '
+        examDomain.append(string.rstrip())
+        del string
+    #print(examDomain, end='\n\n')
 
-    # print(hallName, "\n\n")
-    # print(hallCap, "\n\n")
-    # print(days, "\n\n")
-    # print(time, "\n\n")
+    #print(len(examDomain))
+
     return True
 
 
 def solveCSPProblem():
     problem = Problem()
+    for exam in exams:
+        problem.addVariable(exam, examDomain)
+    problem.addConstraint(AllDifferentConstraint(), exams)
+    solutions = problem.getSolution()
+
+    print(solutions)
 
     return True
 
-
-
+def convertToDocx:
+    pass
 
 refineData()
+solveCSPProblem()
