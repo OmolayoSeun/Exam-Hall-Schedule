@@ -1,6 +1,7 @@
 from resources import Variables as v
 from constraint import *
 import copy
+from docx import Document
 
 # def open_file():
 #     with open("", "r") as file:
@@ -206,6 +207,7 @@ levelExamCourseUnit = []
 aliasExams = []
 
 examDomain = []
+examSolution = {}
 
 
 def checkForAlias(a, b):
@@ -250,8 +252,8 @@ def refineData():
             levelExamCourseUnit.append(lvlListUnit)
         deptExams.append(deptList)
 
-    #print(exams, "\n\n")
-    #print(examsStudentSize, "\n\n")
+    # print(exams, "\n\n")
+    # print(examsStudentSize, "\n\n")
     # print(deptExams, "\n\n")
     # print(levelExams, "\n\n")
     # print(levelExamCourseUnit, "\n\n")
@@ -277,7 +279,7 @@ def refineData():
     for days in timeSlot:
         for slot in days:
             for hall in halls:
-                #print("hall: ", hall)
+                # print("hall: ", hall)
                 temp = copy.deepcopy(slot)
                 temp.append(hall[0])
                 temp.append(hall[1])
@@ -290,12 +292,12 @@ def refineData():
     for exam in examList:
         string = ''
         for i in range(4):
-            string = string + copy.deepcopy(str(exam[i])) + ' '
-        examDomain.append(string.rstrip())
+            string = string + copy.deepcopy(str(exam[i])) + ';'
+        examDomain.append(string[:-1])
         del string
-    #print(examDomain, end='\n\n')
+    # print(examDomain, end='\n\n')
 
-    #print(len(examDomain))
+    # print(len(examDomain))
 
     return True
 
@@ -306,13 +308,81 @@ def solveCSPProblem():
         problem.addVariable(exam, examDomain)
     problem.addConstraint(AllDifferentConstraint(), exams)
     solutions = problem.getSolution()
-
-    print(solutions)
+    global examSolution
+    examSolution = solutions
+    # print(solutions)
 
     return True
 
-def convertToDocx:
+
+def formatToDocument():
+    global examSolution
+    timetable = {}
+    for day, time in v.availableSlotJson.items():
+        temp = []
+        for t in time:
+            temp1 = []
+            if t not in temp1:
+                temp1.append(t)
+            for course, slot in examSolution.items():
+                if t in slot and day in slot:
+                    temp1.append(course)
+            temp.append(temp1)
+        timetable[day] = temp
+    # for days in timetable.items():
+    #     print(days, end="\n\n")
+    examSolution = copy.deepcopy(timetable)
+    print(examSolution)
     pass
+
+
+def convertToDocx():
+    doc = Document()
+    doc.add_heading("Exam Time Table")
+    firstKey = ''
+
+    for s in v.availableSlotJson.keys():
+        firstKey = s
+        break
+    colNo = len(v.availableSlotJson[firstKey])
+    table = doc.add_table(rows=len(v.availableSlotJson) + 1, cols=colNo + 1)
+
+    hdrCells = table.rows[0].cells
+    hdrCells[0].text = 'Days'
+
+    for i in range(colNo):
+        hdrCells[i + 1].text = v.availableSlotJson[firstKey][i]
+
+    def find(lst, text):
+        for index in range(len(lst)):
+            if lst[index] == text:
+                return index
+        return -1
+    i = 0
+    for k, j in v.availableSlotJson.items():
+        rowCells = table.rows[i + 1].cells
+        print(k)
+        rowCells[0].text = k
+        cExamSol = 0
+        for n in range(colNo):
+            isAvailable = find(examSolution[k][cExamSol], v.availableSlotJson[firstKey][n])
+
+            print('first key: ', examSolution[firstKey][0], end='\n\n')
+
+            print('isAvailable: ', isAvailable, end='\n\n')
+
+            if isAvailable != -1:
+                del examSolution[k][cExamSol][0]
+                rowCells[n + 1].text = '\n'.join(examSolution[k][cExamSol])
+                cExamSol = cExamSol + 1
+            pass
+        i = i + 1
+        pass
+    doc.save("timetable.docx")
+    pass
+
 
 refineData()
 solveCSPProblem()
+formatToDocument()
+convertToDocx()
