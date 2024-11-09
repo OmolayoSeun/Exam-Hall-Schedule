@@ -115,6 +115,7 @@ aliasExams = []
 examDomain = []
 examSolution = {}
 
+makeDict = {}
 
 def checkForAlias(a, b):
     if a is None:
@@ -153,6 +154,7 @@ def refineData():
                 lvlList.append(courseCode)
                 examsStudentSize.append(courseInfo[0])
                 lvlListUnit.append(courseInfo[1])
+                makeDict[courseCode] = courseInfo
 
             levelExams.append(lvlList)
             levelExamCourseUnit.append(lvlListUnit)
@@ -164,7 +166,9 @@ def refineData():
     # print(levelExams, "\n\n")
     # print(levelExamCourseUnit, "\n\n")
     # print(aliasExams, "\n\n")
+    print(makeDict, "\n\n")
 
+    return
     halls = []
     days = []
     time = []
@@ -289,6 +293,6 @@ def convertToDocx():
 
 
 refineData()
-solveCSPProblem()
-formatToDocument()
-convertToDocx()
+# solveCSPProblem()
+# formatToDocument()
+# convertToDocx()
