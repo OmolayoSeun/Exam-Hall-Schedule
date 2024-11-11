@@ -157,6 +157,6 @@ allocation = Allocation(v.availableSlotJson)
 domain = Domain(allocation, hall)
 constraints = Constraints(5, 9, levelList, deptExams, aliasList)
 
-cspSolution = CSP(listOfCourse, domain, constraints)
+cspSolution = CSP(listOfCourse, domain, constraints, courseMakeList)
 sol = cspSolution.getSolution()
 print(sol)
