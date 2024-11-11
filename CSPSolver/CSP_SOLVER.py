@@ -104,8 +104,6 @@ v.availableSlotJson = {
     "Days": 20,
     "Slot Per Day": 3
 }
-exams = []
-examsStudentSize = []
 
 deptExams = []
 levelExams = []
@@ -149,10 +147,8 @@ def refineData():
                         aliasExams[result[1]].append(courseCode)
                     else:
                         aliasExams.append([courseInfo[2], courseCode])
-                exams.append(courseCode)
                 deptList.append(courseCode)
                 lvlList.append(courseCode)
-                examsStudentSize.append(courseInfo[0])
                 lvlListUnit.append(courseInfo[1])
                 makeDict[courseCode] = courseInfo
 
@@ -160,12 +156,10 @@ def refineData():
             levelExamCourseUnit.append(lvlListUnit)
         deptExams.append(deptList)
 
-    # print(exams, "\n\n")
-    # print(examsStudentSize, "\n\n")
-    # print(deptExams, "\n\n")
-    # print(levelExams, "\n\n")
-    # print(levelExamCourseUnit, "\n\n")
-    # print(aliasExams, "\n\n")
+    print(deptExams, "\n\n")
+    print(levelExams, "\n\n")
+    print(levelExamCourseUnit, "\n\n")
+    print(aliasExams, "\n\n")
     print(makeDict, "\n\n")
 
     return

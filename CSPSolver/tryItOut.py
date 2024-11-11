@@ -1,3 +1,5 @@
+import copy
+
 from resources import Variables as v
 from csp import *
 from createDoc import *
@@ -100,65 +102,121 @@ v.availableSlotJson = {
     "Days": 20,
     "Slot Per Day": 3
 }
-courseMakeList = {'CHM112': [80, 3, 'General'], 'CHM111': [80, 3, 'None'], 'MTH112': [80, 3, 'None'],
-                  'MTH111': [80, 3, 'General'], 'BIO111': [80, 3, 'General'], 'CSC111': [80, 3, 'General'],
-                  'PHY111': [80, 3, 'General'], 'GSE111': [80, 3, 'General'], 'GSE112': [80, 3, 'General'],
-                  'CHM211': [80, 3, 'None'], 'CHM212': [80, 3, 'None'], 'CHM213': [80, 3, 'General'],
-                  'CHM214': [80, 3, 'None'], 'CHM219': [80, 3, 'None'], 'PHY211': [80, 3, 'None'],
-                  'MTH211': [80, 3, 'None'], 'MTH213': [80, 3, 'None'], 'GSE211': [80, 3, 'General'],
-                  'CSC211': [80, 3, 'None'], 'EVS212': [80, 3, 'None'], 'CHM310': [80, 3, 'None'],
-                  'CHM311': [80, 3, 'None'], 'CHM312': [80, 3, 'None'], 'CHM313': [80, 3, 'None'],
-                  'CHM316': [80, 3, 'None'], 'CHM318': [80, 3, 'None'], 'CHM319': [80, 3, 'None'],
-                  'CHM330': [80, 3, 'None'], 'CHM334': [80, 3, 'None'], 'GSE311': [80, 3, 'General'],
-                  'GLY111': [80, 3, 'None'], 'BIO111x': [80, 3, 'General'], 'CHM112x': [80, 3, 'General'],
-                  'CHM119': [80, 3, 'None'], 'PHY111x': [80, 3, 'General'], 'MTH111x': [80, 3, 'General'],
-                  'CSC111x': [80, 3, 'General'], 'GSE111x': [80, 3, 'General'], 'GSE112x': [80, 3, 'General'],
-                  'GLY211': [80, 3, 'None'], 'GLY212': [80, 3, 'None'], 'GLY213': [80, 3, 'None'],
-                  'GLY214': [80, 3, 'None'], 'GLY215': [80, 3, 'None'], 'GLY216': [80, 3, 'None'],
-                  'CHM213x': [80, 3, 'General'], 'GSE211x': [80, 3, 'General'], 'GSE111xx': [80, 3, 'General'],
-                  'GSE112xx': [80, 3, 'General'], 'GLY331': [80, 3, 'None'], 'GLY312': [80, 3, 'None'],
-                  'GLY313': [80, 3, 'None'], 'GLY314': [80, 3, 'None'], 'GLY315': [80, 3, 'None'],
-                  'GLY316': [80, 3, 'None'], 'GPH314': [80, 3, 'EVS212'], 'GSE311x': [80, 3, 'General']}
+# courseMakeList = {'CHM112': [80, 3, 'General'], 'CHM111': [80, 3, 'None'], 'MTH112': [80, 3, 'None'],
+#                   'MTH111': [80, 3, 'General'], 'BIO111': [80, 3, 'General'], 'CSC111': [80, 3, 'General'],
+#                   'PHY111': [80, 3, 'General'], 'GSE111': [80, 3, 'General'], 'GSE112': [80, 3, 'General'],
+#                   'CHM211': [80, 3, 'None'], 'CHM212': [80, 3, 'None'], 'CHM213': [80, 3, 'General'],
+#                   'CHM214': [80, 3, 'None'], 'CHM219': [80, 3, 'None'], 'PHY211': [80, 3, 'None'],
+#                   'MTH211': [80, 3, 'None'], 'MTH213': [80, 3, 'None'], 'GSE211': [80, 3, 'General'],
+#                   'CSC211': [80, 3, 'None'], 'EVS212': [80, 3, 'None'], 'CHM310': [80, 3, 'None'],
+#                   'CHM311': [80, 3, 'None'], 'CHM312': [80, 3, 'None'], 'CHM313': [80, 3, 'None'],
+#                   'CHM316': [80, 3, 'None'], 'CHM318': [80, 3, 'None'], 'CHM319': [80, 3, 'None'],
+#                   'CHM330': [80, 3, 'None'], 'CHM334': [80, 3, 'None'], 'GSE311': [80, 3, 'General'],
+#                   'GLY111': [80, 3, 'None'], 'BIO111x': [80, 3, 'General'], 'CHM112x': [80, 3, 'General'],
+#                   'CHM119': [80, 3, 'None'], 'PHY111x': [80, 3, 'General'], 'MTH111x': [80, 3, 'General'],
+#                   'CSC111x': [80, 3, 'General'], 'GSE111x': [80, 3, 'General'], 'GSE112x': [80, 3, 'General'],
+#                   'GLY211': [80, 3, 'None'], 'GLY212': [80, 3, 'None'], 'GLY213': [80, 3, 'None'],
+#                   'GLY214': [80, 3, 'None'], 'GLY215': [80, 3, 'None'], 'GLY216': [80, 3, 'None'],
+#                   'CHM213x': [80, 3, 'General'], 'GSE211x': [80, 3, 'General'], 'GSE111xx': [80, 3, 'General'],
+#                   'GSE112xx': [80, 3, 'General'], 'GLY331': [80, 3, 'None'], 'GLY312': [80, 3, 'None'],
+#                   'GLY313': [80, 3, 'None'], 'GLY314': [80, 3, 'None'], 'GLY315': [80, 3, 'None'],
+#                   'GLY316': [80, 3, 'None'], 'GPH314': [80, 3, 'EVS212'], 'GSE311x': [80, 3, 'General']}
+#
+# deptExams = [['CHM112', 'CHM111', 'MTH112', 'MTH111', 'BIO111',
+#               'CSC111', 'PHY111', 'GSE111', 'GSE112', 'CHM211',
+#               'CHM212', 'CHM213', 'CHM214', 'CHM219', 'PHY211',
+#               'MTH211', 'MTH213', 'GSE211', 'CSC211', 'EVS212',
+#               'CHM310', 'CHM311', 'CHM312', 'CHM313', 'CHM316',
+#               'CHM318', 'CHM319', 'CHM330', 'CHM334', 'GSE311'],
+#              ['GLY111', 'BIO111x', 'CHM112x', 'CHM119', 'PHY111x',
+#               'MTH111x', 'CSC111x', 'GSE111x', 'GSE112x', 'GLY211',
+#               'GLY212', 'GLY213', 'GLY214', 'GLY215', 'GLY216', 'CHM213x',
+#               'GSE211x', 'GSE111xx', 'GSE112xx', 'GLY331', 'GLY312', 'GLY313',
+#               'GLY314', 'GLY315', 'GLY316', 'GPH314', 'GSE311x']]
+# levelList = [['CHM112', 'CHM111', 'MTH112', 'MTH111', 'BIO111', 'CSC111',
+#               'PHY111', 'GSE111', 'GSE112'],
+#              ['CHM211', 'CHM212', 'CHM213', 'CHM214', 'CHM219', 'PHY211', 'MTH211',
+#               'MTH213', 'GSE211', 'CSC211', 'EVS212'],
+#              ['CHM310', 'CHM311', 'CHM312', 'CHM313', 'CHM316', 'CHM318', 'CHM319',
+#               'CHM330', 'CHM334', 'GSE311'],
+#              ['GLY111', 'BIO111x', 'CHM112x', 'CHM119', 'PHY111x', 'MTH111x',
+#               'CSC111x', 'GSE111x', 'GSE112x'],
+#              ['GLY211', 'GLY212', 'GLY213', 'GLY214', 'GLY215', 'GLY216', 'CHM213x',
+#               'GSE211x', 'GSE111xx', 'GSE112xx'],
+#              ['GLY331', 'GLY312', 'GLY313', 'GLY314', 'GLY315',
+#               'GLY316', 'GPH314', 'GSE311x']]
+#
+# aliasList = [['CHM112', 'CHM112x'], ['MTH111', 'MTH111x'], ['BIO111', 'BIO111x'],
+#              ['CSC111', 'CSC111x'], ['PHY111', 'PHY111x'], ['GSE111', 'GSE111x', 'GSE111xx'],
+#              ['GSE112', 'GSE112x', 'GSE112xx'], ['CHM213', 'CHM213x'],
+#              ['GSE211', 'GSE211x'], ['GSE311', 'GSE311x'], ['EVS212', 'GPH314']]
 
-deptExams = [['CHM112', 'CHM111', 'MTH112', 'MTH111', 'BIO111',
-              'CSC111', 'PHY111', 'GSE111', 'GSE112', 'CHM211',
-              'CHM212', 'CHM213', 'CHM214', 'CHM219', 'PHY211',
-              'MTH211', 'MTH213', 'GSE211', 'CSC211', 'EVS212',
-              'CHM310', 'CHM311', 'CHM312', 'CHM313', 'CHM316',
-              'CHM318', 'CHM319', 'CHM330', 'CHM334', 'GSE311'],
-             ['GLY111', 'BIO111x', 'CHM112x', 'CHM119', 'PHY111x',
-              'MTH111x', 'CSC111x', 'GSE111x', 'GSE112x', 'GLY211',
-              'GLY212', 'GLY213', 'GLY214', 'GLY215', 'GLY216', 'CHM213x',
-              'GSE211x', 'GSE111xx', 'GSE112xx', 'GLY331', 'GLY312', 'GLY313',
-              'GLY314', 'GLY315', 'GLY316', 'GPH314', 'GSE311x']]
-levelList = [['CHM112', 'CHM111', 'MTH112', 'MTH111', 'BIO111', 'CSC111',
-              'PHY111', 'GSE111', 'GSE112'],
-             ['CHM211', 'CHM212', 'CHM213', 'CHM214', 'CHM219', 'PHY211', 'MTH211',
-              'MTH213', 'GSE211', 'CSC211', 'EVS212'],
-             ['CHM310', 'CHM311', 'CHM312', 'CHM313', 'CHM316', 'CHM318', 'CHM319',
-              'CHM330', 'CHM334', 'GSE311'],
-             ['GLY111', 'BIO111x', 'CHM112x', 'CHM119', 'PHY111x', 'MTH111x',
-              'CSC111x', 'GSE111x', 'GSE112x'],
-             ['GLY211', 'GLY212', 'GLY213', 'GLY214', 'GLY215', 'GLY216', 'CHM213x',
-              'GSE211x', 'GSE111xx', 'GSE112xx'],
-             ['GLY331', 'GLY312', 'GLY313', 'GLY314', 'GLY315',
-              'GLY316', 'GPH314', 'GSE311x']]
 
-aliasList = [['CHM112', 'CHM112x'], ['MTH111', 'MTH111x'], ['BIO111', 'BIO111x'],
-             ['CSC111', 'CSC111x'], ['PHY111', 'PHY111x'], ['GSE111', 'GSE111x', 'GSE111xx'],
-             ['GSE112', 'GSE112x', 'GSE112xx'], ['CHM213', 'CHM213x'],
-             ['GSE211', 'GSE211x'], ['GSE311', 'GSE311x'], ['EVS212', 'GPH314']]
+deptExams = []
+levelExams = []
+levelExamCourseUnit = []
+aliasExams = []
 
-for name, info in courseMakeList.items():
+examDomain = []
+examSolution = {}
+
+makeDict = {}
+
+def checkForAlias(a, b):
+    if a is None:
+        return [False, 0]
+    else:
+        for i in range(len(a)):
+            if b in a[i]:
+                return [True, i]
+        else:
+            return [False, 0]
+
+
+def refineData():
+    for level in v.courseListJson.values():
+        deptList = []
+        for courses in level.values():
+            lvlList = []
+            lvlListUnit = []
+            for courseCode, courseInfo in courses.items():
+                if courseInfo[2] == "General":
+                    result = checkForAlias(aliasExams, courseCode)
+                    if result[0]:
+                        courseCode = copy.deepcopy(aliasExams[result[1]][-1] + 'x')
+                        aliasExams[result[1]].append(courseCode)
+
+                    else:
+                        aliasExams.append([courseCode])
+                elif courseInfo[2] != "None":
+                    result = checkForAlias(aliasExams, courseInfo[2])
+                    if result[0]:
+                        aliasExams[result[1]].append(courseCode)
+                    else:
+                        aliasExams.append([courseInfo[2], courseCode])
+                deptList.append(courseCode)
+                lvlList.append(courseCode)
+                lvlListUnit.append(courseInfo[1])
+                makeDict[courseCode] = courseInfo
+
+            levelExams.append(lvlList)
+            levelExamCourseUnit.append(lvlListUnit)
+        deptExams.append(deptList)
+
+
+
+
+refineData()
+for name, info in makeDict.items():
     listOfCourse.append(Variable(name, info))
 
 hall = Hall(v.hallListJson)
 allocation = Allocation(v.availableSlotJson)
 
 domain = Domain(allocation, hall)
-constraints = Constraints(5, 9, levelList, deptExams, aliasList)
+constraints = Constraints(5, 9, levelExams, deptExams, aliasExams)
 
-cspSolution = CSP(listOfCourse, domain, constraints, courseMakeList)
+cspSolution = CSP(listOfCourse, domain, constraints, makeDict)
 sol = cspSolution.getSolution()
 # print(sol)
 
