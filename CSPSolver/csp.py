@@ -77,6 +77,7 @@ class Constraints:
     def __checkMaxPerWeek__(self):
         pass
 
+
     def __checkMaxPerDay__(self):
         pass
 
