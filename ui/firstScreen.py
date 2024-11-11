@@ -1,6 +1,5 @@
 import json
 from tkinter import ttk, filedialog
-from tools.ClearContent import *
 import resources.Variables as v
 from tools.Configure import *
 from ui.secondScreen import secondScreen
@@ -20,27 +19,30 @@ def open_file(textView: Entry):
 def button_click(courseFilePath: str, hallFilePath: str, availableSlotFilePath: str, frame):
     # First check if all entries are proper
     frame.destroy()
+    # TODO Open later
+    #
+    # if courseFilePath:
+    #     with open(courseFilePath, "r") as file:
+    #         v.courseListJson = json.load(file)
+    # if hallFilePath:
+    #     with open(hallFilePath, 'r') as file:
+    #         v.hallListJson = json.load(file)
+    # if availableSlotFilePath:
+    #     with open(availableSlotFilePath, 'r') as file:
+    #         v.availableSlotJson = json.load(file)
+    #
+    # print(v.courseListJson)
+    # print(v.hallListJson)
+    # print(v.availableSlotJson)
 
+    # Display second page
     secondScreen.display(v.app)
-    if courseFilePath:
-        with open(courseFilePath, "r") as file:
-            v.courseListJson = json.load(file)
-    if hallFilePath:
-        with open(hallFilePath, 'r') as file:
-            v.hallListJson = json.load(file)
-    if availableSlotFilePath:
-        with open(availableSlotFilePath, 'r') as file:
-            v.availableSlotJson = json.load(file)
-
-    print(v.courseListJson)
-    print(v.hallListJson)
-    print(v.availableSlotJson)
-
 
 # This page display the first interface
 class firstScreen:
 
-    def display(self):
+    @staticmethod
+    def display():
         frame = Frame(v.app)
         configFrame(frame)
 

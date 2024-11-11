@@ -22,5 +22,5 @@ class RootUI:
     @staticmethod
     def run():
         global app
-        firstScreen.display(app)
+        firstScreen.display()
         app.mainloop()
