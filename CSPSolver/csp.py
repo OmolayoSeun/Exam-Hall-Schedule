@@ -70,9 +70,11 @@ class Constraints:
         self.alaisExam = alaisExam
         pass
 
-    def checkCapacity(self):
-
-        pass
+    @staticmethod
+    def __checkCapacity__(var: Variable, hallCap: int):
+        if var.info[0] > hallCap:
+            return True
+        return False
 
     def __checkMaxPerWeek__(self):
         pass
@@ -81,8 +83,19 @@ class Constraints:
     def __checkMaxPerDay__(self):
         pass
 
-    def __checkDept__(self):
-        pass
+    def __checkDept__(self, name, solutions, dayIndex, slotIndex):
+        if not solutions:
+            return False
+        ls = []
+        for deptLst in self.deptExams:
+            if name in deptLst:
+                ls = deptLst
+                break
+        for a in ls:
+            for b in solutions:
+                if a == b[0] and b[1] == dayIndex and b[2] == slotIndex:
+                    return True
+        return False
 
     @staticmethod
     def __hallIsAvailable__(solution: list, dayIndex: int, slotIndex: int, hallName: str):
@@ -110,7 +123,7 @@ class Constraints:
     def __noRepeatedCourse__(name, item):
         return name in item
 
-    def isSatisfied(self, var: Variable, domain: Domain, solution: list, dayIndex: int, slotIndex: int, hallName: str):
+    def isSatisfied(self, var: Variable, domain: Domain, solution: list, dayIndex: int, slotIndex: int, hallName: str, hallIndex: int):
         item = []
         for ls in solution:
             item.append(ls[0])
@@ -119,6 +132,10 @@ class Constraints:
         if self.__hallIsAvailable__(solution, dayIndex, slotIndex, hallName):
             return False
         if self.__checkLevel__(var.name, solution, dayIndex, slotIndex):
+            return False
+        if self.__checkDept__(var.name, solution, dayIndex, slotIndex):
+            return False
+        if self.__checkCapacity__(var, domain.hallCapacity[hallIndex]):
             return False
 
         return True
@@ -190,7 +207,7 @@ class CSP:
                         for hallIndex in range(self.domain.hallCount):
                             # print([var.name, dayIndex, slotIndex, self.domain.hallName[hallIndex]])
                             resolvedCourse = self.const.isSatisfied(var, self.domain, self.solution, dayIndex,
-                                                                    slotIndex, self.domain.hallName[hallIndex])
+                                                                    slotIndex, self.domain.hallName[hallIndex], hallIndex)
                             if resolvedCourse:
                                 self.solution.append([var.name, dayIndex, slotIndex, self.domain.hallName[hallIndex]])
                                 # E.g [Mth111, 2, 0, TLH1]
@@ -206,3 +223,4 @@ class CSP:
                 print("==========ALL RESOLED++++++++++")
                 break
         return self.solution
+

@@ -1,5 +1,6 @@
 from resources import Variables as v
 from csp import *
+from createDoc import *
 
 listOfCourse = []
 v.courseListJson = {
@@ -159,4 +160,8 @@ constraints = Constraints(5, 9, levelList, deptExams, aliasList)
 
 cspSolution = CSP(listOfCourse, domain, constraints, courseMakeList)
 sol = cspSolution.getSolution()
-print(sol)
+# print(sol)
+
+if sol:
+    doc = CreateDocument(sol, domain.dayCount, domain.slotCount)
+    doc.create()
