@@ -4,9 +4,9 @@ import tkinter as tk
 
 from resources import Variables as v
 
-courseListJson = None
-hallListJson = None
-availableSlotJson = None
+courseListJson = {}
+hallListJson = {}
+availableSlotJson = {}
 maxPerDay = 0
 maxPerWeek = 0
 
@@ -54,7 +54,7 @@ def getFiles(courseFilePath: str, hallFilePath: str, availableSlotFilePath: str)
     try:
         append_log("Reading course file... ", "black")
         with open(availableSlotFilePath, 'r') as file:
-            v.availableSlotJson = json.load(file)
+            availableSlotJson = json.load(file)
     except FileNotFoundError as e:
         append_log("Error: " + str(e), "red")
         return False
@@ -71,6 +71,7 @@ def getConstraints():
 
 
 def printOutput():
+    v.outputList = list("/".glob("*.docx"))
     for item in v.outputList:
         v.outputList.insert(tk.END, item)
     pass
@@ -87,7 +88,9 @@ def checkForAlias(a, b):
 
 
 def refineData():
-    for level in v.courseListJson.values():
+    global courseListJson
+
+    for level in courseListJson.values():
         deptList = []
         for courses in level.values():
             lvlList = []
@@ -118,6 +121,7 @@ def refineData():
 
 
 def startProcess():
+    global hallListJson, availableSlotJson
     if not getFiles(v.courseEnt.get(), v.hallEnt.get(), v.slotEnt.get()):
         append_log("Operation terminated", "red")
         return
@@ -128,27 +132,30 @@ def startProcess():
 
     append_log("Initializing CSP solver...", "black")
 
-
+    import CSPSolver.csp as c
 
     for name, info in makeDict.items():
-        listOfCourse.append(Variable(name, info))
+        listOfCourse.append(c.Variable(name, info))
 
-    hall = Hall(v.hallListJson)
-    allocation = Allocation(v.availableSlotJson)
+    hall = c.Hall(hallListJson)
+    allocation = c.Allocation(availableSlotJson)
 
-    domain = Domain(allocation, hall)
-    constraints = Constraints(5, 9, levelExams, deptExams, aliasExams)
+    domain = c.Domain(allocation, hall)
+    constraints = c.Constraints(5, 9, levelExams, deptExams, aliasExams)
 
-    cspSolution = CSP(listOfCourse, domain, constraints, makeDict)
+    cspSolution = c.CSP(listOfCourse, domain, constraints, makeDict)
 
     append_log("CSP Operation started...", "black")
     sol = cspSolution.getSolution()
 
+    import CSPSolver.createDoc as create
     if sol:
         append_log("Creating docx file...", "black")
-        doc = CreateDocument(sol, domain.dayCount, domain.slotCount)
+        doc = create.CreateDocument(sol, domain.dayCount, domain.slotCount)
         doc.create()
         append_log("Successful", "green")
+
+
     else:
         append_log("Operation terminated, No feasible solution", "red")
 

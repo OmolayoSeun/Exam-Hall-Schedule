@@ -1,3 +1,5 @@
+import os
+
 from docx import Document
 
 
@@ -44,6 +46,13 @@ class CreateDocument:
             for j in range(self.slotCount):
                 rowCells[j + 1].text = self.reorganisedList[i][j]
 
-        doc.save("timetable.docx")
+        filename = "timetable.docx"
+        count = 1
+        while True:
+            if os.path.exists(filename):
+                name, extension = filename.rsplit('.', 1)
+                filename = f"{name}{count}.{extension}"
+            else:
+                break
 
-        pass
+        doc.save(filename)
