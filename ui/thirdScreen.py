@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from tkinter import messagebox
 from tkinter.ttk import *
 from resources import Variables as v
@@ -12,7 +14,8 @@ def thirdScreen(frame):
         selected_index = listbox.curselection()
         if selected_index:
             selected_text = listbox.get(selected_index)
-            messagebox.showinfo("Item Clicked", f"You selected: {selected_text}")
+            os.startfile(selected_text)
+            # messagebox.showinfo("Item Clicked", f"You selected: {selected_text}")
 
     label = Label(frame, text="Outputs", anchor='w')
     label = configLabel(label)
@@ -24,7 +27,17 @@ def thirdScreen(frame):
 
     v.outputList = listbox
 
+    fileList = list(Path("").glob("*.docx"))
+
+    count = 0
+    for item in fileList:
+        v.outputList.insert(count, item)
+        count = count + 1
+
     listbox.bind("<<ListboxSelect>>", on_item_click)
+
+
+
 
 
 

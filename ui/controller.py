@@ -1,6 +1,7 @@
 import copy
 import json
 import tkinter as tk
+from pathlib import Path
 
 from resources import Variables as v
 
@@ -71,9 +72,13 @@ def getConstraints():
 
 
 def printOutput():
-    v.outputList = list("/".glob("*.docx"))
-    for item in v.outputList:
-        v.outputList.insert(tk.END, item)
+    fileList = list(Path("").glob("*.docx"))
+    print(fileList)
+
+    count = 0
+    for item in fileList:
+        v.outputList.insert(count, item)
+        count = count + 1
     pass
 
 def checkForAlias(a, b):
@@ -121,6 +126,8 @@ def refineData():
 
 
 def startProcess():
+    printOutput()
+    return
     global hallListJson, availableSlotJson
     if not getFiles(v.courseEnt.get(), v.hallEnt.get(), v.slotEnt.get()):
         append_log("Operation terminated", "red")
@@ -154,7 +161,7 @@ def startProcess():
         doc = create.CreateDocument(sol, domain.dayCount, domain.slotCount)
         doc.create()
         append_log("Successful", "green")
-
+        printOutput()
 
     else:
         append_log("Operation terminated, No feasible solution", "red")
