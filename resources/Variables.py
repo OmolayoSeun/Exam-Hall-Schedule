@@ -11,5 +11,5 @@ button = Button
 
 outputList = []
 
-outputList = Listbox
+outputListComponent = Listbox
 logs = ScrolledText

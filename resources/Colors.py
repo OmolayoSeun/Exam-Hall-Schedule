@@ -1,4 +1,3 @@
-# Holds some uniquely designed color
 class Color:
     skyBlue = '#39A7FF'
     skyBlueHighlight = '#87C4FF'
