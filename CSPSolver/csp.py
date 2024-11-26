@@ -1,11 +1,3 @@
-#from Debug import *
-
-#msg = DebugMSG()
-
-
-# Expected data
-# Name: CSC312
-# info: [80, 3, 'None']
 class Variable:
     def __init__(self, name: str, info: list):
         self.name = name
@@ -13,8 +5,6 @@ class Variable:
         pass
 
 
-# Expected data
-# dictionary of the hall
 class Hall:
     name = []
     capacity = []
@@ -29,8 +19,6 @@ class Hall:
         pass
 
 
-# Expected data
-# Dictionary of the slots
 class Allocation:
     def __init__(self, allocation: dict):
         self.dayCount = allocation['Days']
@@ -38,8 +26,6 @@ class Allocation:
         pass
 
 
-# Expected data
-# Allocation and Hall
 class Domain:
     def __init__(self, allocation: Allocation, hall: Hall):
         self.dayCount = allocation.dayCount
@@ -49,16 +35,6 @@ class Domain:
         self.hallCapacity = hall.capacity
         self.totalHallCap = hall.totalCapacity
         pass
-
-
-# Expected data
-""""
-@:param maxPerDay - number of unit student can take per day
-@:param maxPerWeek - number of unit student can take per week
-@:param levelExams - exams unique to student level
-@:param deptExams - exam unique to the department
-@:param alaisExam - exams that are general of have an alias name
-"""
 
 
 class Constraints:
@@ -141,13 +117,6 @@ class Constraints:
         return True
 
 
-"""
-@:param variables - receive a list of the variable class
-@:param domain - receive the domain class variable
-@:param constraint - the constraint class variable
-"""
-
-
 class CSP:
     solution = []
 
@@ -161,8 +130,6 @@ class CSP:
         item = []
         for ls in self.solution:
             item.append(ls[0])
-        # msg.msg("Item", item)
-        # msg.msg("ls", self.solution)
 
         for var in self.variables:
             if var.name not in item:

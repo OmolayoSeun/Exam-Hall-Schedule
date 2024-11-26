@@ -126,8 +126,6 @@ def refineData():
 
 
 def startProcess():
-    printOutput()
-    return
     global hallListJson, availableSlotJson
     if not getFiles(v.courseEnt.get(), v.hallEnt.get(), v.slotEnt.get()):
         append_log("Operation terminated", "red")

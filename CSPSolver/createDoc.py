@@ -1,5 +1,4 @@
 import os
-
 from docx import Document
 
 
@@ -23,7 +22,6 @@ class CreateDocument:
                         string = string + item[0] + '[' + item[-1] + ']\n'
                         pass
                 newList.append(string)
-                # print(string)
             self.reorganisedList.append(newList)
         print(self.reorganisedList)
 

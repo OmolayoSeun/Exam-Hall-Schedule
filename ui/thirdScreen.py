@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
-from tkinter import messagebox
 from tkinter.ttk import *
 from resources import Variables as v
 from tools.Configure import *
+
 
 def thirdScreen(frame):
     frame.columnconfigure(0, weight=1)
@@ -15,7 +15,6 @@ def thirdScreen(frame):
         if selected_index:
             selected_text = listbox.get(selected_index)
             os.startfile(selected_text)
-            # messagebox.showinfo("Item Clicked", f"You selected: {selected_text}")
 
     label = Label(frame, text="Outputs", anchor='w')
     label = configLabel(label)
@@ -35,9 +34,3 @@ def thirdScreen(frame):
         count = count + 1
 
     listbox.bind("<<ListboxSelect>>", on_item_click)
-
-
-
-
-
-
